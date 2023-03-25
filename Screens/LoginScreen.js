@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
-  ImageBackground,
+  Image,
   Text,
   TextInput,
   Dimensions,
@@ -50,87 +50,86 @@ export const LoginScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        <ImageBackground
+        <Image
           source={require("../assets/images/Photo-BG.jpg")}
-          style={styles.image}
+          style={styles.bgImage}
+        />
+        <View
+          style={{
+            ...styles.registrationWrapper,
+            height: isShowKeyboard ? 248 : 489,
+          }}
         >
-          <View
-            style={{
-              ...styles.registrationWrapper,
-              height: isShowKeyboard ? 248 : 489,
-            }}
+          <Text style={styles.title}>Sign in</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <Text style={styles.title}>Sign in</Text>
-            <KeyboardAvoidingView
-              behavior={Platform.OS == "ios" ? "padding" : "height"}
+            <View
+              style={{
+                ...styles.form,
+                marginBottom: isShowKeyboard ? 32 : 43,
+              }}
             >
-              <View
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor="#BDBDBD"
                 style={{
-                  ...styles.form,
-                  marginBottom: isShowKeyboard ? 32 : 43,
+                  ...styles.input,
+                  borderColor: inputOnFocus.email ? "#FF6C00" : "#E8E8E8",
                 }}
-              >
+                value={state.email}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
+                onFocus={() => onFocus("email")}
+                onBlur={onBlur}
+              />
+              <View>
                 <TextInput
-                  placeholder="Email"
+                  secureTextEntry={!isPasswordVisible}
+                  placeholder="Password"
                   placeholderTextColor="#BDBDBD"
                   style={{
                     ...styles.input,
-                    borderColor: inputOnFocus.email ? "#FF6C00" : "#E8E8E8",
+                    borderColor: inputOnFocus.password ? "#FF6C00" : "#E8E8E8",
                   }}
-                  value={state.email}
+                  value={state.password}
                   onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, email: value }))
+                    setState((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }))
                   }
-                  onFocus={() => onFocus("email")}
+                  onFocus={() => onFocus("password")}
                   onBlur={onBlur}
                 />
-                <View>
-                  <TextInput
-                    secureTextEntry={!isPasswordVisible}
-                    placeholder="Password"
-                    placeholderTextColor="#BDBDBD"
-                    style={{
-                      ...styles.input,
-                      borderColor: inputOnFocus.password
-                        ? "#FF6C00"
-                        : "#E8E8E8",
-                    }}
-                    value={state.password}
-                    onChangeText={(value) =>
-                      setState((prevState) => ({
-                        ...prevState,
-                        password: value,
-                      }))
-                    }
-                    onFocus={() => onFocus("password")}
-                    onBlur={onBlur}
-                  />
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={togglePasswordVisibility}
-                    style={styles.showBtn}
-                  >
-                    <Text style={styles.showBtnText}>
-                      {isPasswordVisible ? "Hide" : "Show"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </KeyboardAvoidingView>
-            {!isShowKeyboard && (
-              <>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  style={styles.button}
-                  onPress={keyboardHide}
+                  onPress={togglePasswordVisibility}
+                  style={styles.showBtn}
                 >
-                  <Text style={styles.buttonTitle}>Sign in</Text>
+                  <Text style={styles.showBtnText}>
+                    {isPasswordVisible ? "Hide" : "Show"}
+                  </Text>
                 </TouchableOpacity>
-                <Text style={styles.question}>No account? Register</Text>
-              </>
-            )}
-          </View>
-        </ImageBackground>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+          {!isShowKeyboard && (
+            <>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.button}
+                onPress={keyboardHide}
+              >
+                <Text style={styles.buttonTitle}>Sign in</Text>
+              </TouchableOpacity>
+              <Text style={styles.question}>
+                Don't have an account? Register
+              </Text>
+            </>
+          )}
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -139,13 +138,15 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-end",
     backgroundColor: "#fff",
   },
-  image: {
-    flex: 1,
+  bgImage: {
+    position: "absolute",
+    top: 0,
+    right: 0,
     resizeMode: "cover",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    width: "100%",
   },
   registrationWrapper: {
     paddingHorizontal: 16,
