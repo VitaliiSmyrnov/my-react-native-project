@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { AddUserPhotoIcon } from "../Components/AddUserPhotoIcon";
+import { AddUserPhotoIcon } from "../../Components/svg/AddUserPhotoIcon";
 
 const { width } = Dimensions.get("window");
 
@@ -22,7 +22,7 @@ const initialState = {
   password: "",
 };
 
-export const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -31,6 +31,7 @@ export const RegistrationScreen = () => {
   const onFocus = (value) => {
     setInputOnFocus({ [value]: true });
     setIsShowKeyboard(true);
+    console.log(value);
   };
 
   const onBlur = () => {
@@ -41,8 +42,13 @@ export const RegistrationScreen = () => {
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
     setState(initialState);
+  };
+
+  const onSubmit = () => {
+    keyboardHide();
+    console.log(state);
+    navigation.navigate("Home");
   };
 
   const togglePasswordVisibility = () => {
@@ -53,7 +59,7 @@ export const RegistrationScreen = () => {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <Image
-          source={require("../assets/images/Photo-BG.jpg")}
+          source={require("../../assets/images/Photo-BG.jpg")}
           style={styles.bgImage}
         />
         <View
@@ -146,13 +152,18 @@ export const RegistrationScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={keyboardHide}
+                onPress={onSubmit}
               >
                 <Text style={styles.buttonTitle}>Register</Text>
               </TouchableOpacity>
-              <Text style={styles.question}>
-                Already have an account? Sign in
-              </Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate("Login")}
+              >
+                <Text style={styles.question}>
+                  Already have an account? Sign in
+                </Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
@@ -255,9 +266,12 @@ const styles = StyleSheet.create({
   },
   question: {
     marginTop: 16,
+    paddingRight: 5,
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#1B4371",
   },
 });
+
+export default RegistrationScreen;

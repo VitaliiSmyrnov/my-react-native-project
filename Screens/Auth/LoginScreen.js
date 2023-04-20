@@ -20,7 +20,7 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -39,8 +39,13 @@ export const LoginScreen = () => {
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
     setState(initialState);
+  };
+
+  const onSubmit = () => {
+    keyboardHide();
+    console.log(state);
+    navigation.navigate("Home");
   };
 
   const togglePasswordVisibility = () => {
@@ -51,7 +56,7 @@ export const LoginScreen = () => {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <Image
-          source={require("../assets/images/Photo-BG.jpg")}
+          source={require("../../assets/images/Photo-BG.jpg")}
           style={styles.bgImage}
         />
         <View
@@ -120,13 +125,18 @@ export const LoginScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={keyboardHide}
+                onPress={onSubmit}
               >
                 <Text style={styles.buttonTitle}>Sign in</Text>
               </TouchableOpacity>
-              <Text style={styles.question}>
-                Don't have an account? Register
-              </Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate("Registration")}
+              >
+                <Text style={styles.question}>
+                  Don't have an account? Register
+                </Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
@@ -216,3 +226,5 @@ const styles = StyleSheet.create({
     color: "#1B4371",
   },
 });
+
+export default LoginScreen;
