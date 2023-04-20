@@ -1,23 +1,14 @@
 import React from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { SafeAreaView, View, Text, Image, StyleSheet } from "react-native";
 import { Header } from "../../Components/Header";
 
-const PostsScreen = () => {
+const PostsScreen = ({ route }) => {
   return (
     <SafeAreaView>
       <Header title="Posts" />
       <View style={styles.container}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
-            style={styles.userImg}
-            source={{ uri: null }}
-          />
+          <Image style={styles.userImg} source={{ uri: null }} />
           <View>
             <Text style={styles.userName}>Natali Romanova</Text>
             <Text style={styles.userEmail}>email@example.com</Text>

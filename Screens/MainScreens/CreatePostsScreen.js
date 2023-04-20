@@ -12,6 +12,8 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
+// import { TouchableOpacity } from "react-native-gesture-handler";
+import { Camera } from "expo-camera";
 
 import { Header } from "../../Components/Header";
 import { CameraIcon, MapIcon, TrashIcon } from "../../Components/svg";
@@ -24,11 +26,24 @@ const initialState = {
 
 const CreatePostsScreen = () => {
   const [state, setState] = useState(initialState);
+  const [camera, setCamera] = useState(null);
   const [isActiveBtn, setIsActiveBtn] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [inputOnFocus, setInputOnFocus] = useState({});
 
   const { photo, title, location } = state;
+
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    setState((prevState) => ({ ...prevState, photo: photo.uri }));
+    console.log("photo", photo);
+  };
+
+  useEffect(() => {
+    if (photo && title && location) {
+      setIsActiveBtn(true);
+    } else setIsActiveBtn(false);
+  }, [photo, title, location]);
 
   const onFocus = (value) => {
     setInputOnFocus({ [value]: true });
@@ -40,19 +55,13 @@ const CreatePostsScreen = () => {
     setIsShowKeyboard(false);
   };
 
+  const handleChangeInput = (name, value) => {
+    setState((prev) => ({ ...prev, [name]: value }));
+  };
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-  };
-
-  useEffect(() => {
-    if (photo && title && location) {
-      setIsActiveBtn(true);
-    } else setIsActiveBtn(false);
-  }, [photo, title, location]);
-
-  const handleChangeInput = (name, value) => {
-    setState((prev) => ({ ...prev, [name]: value }));
   };
 
   const onSubmitForm = () => {
@@ -78,14 +87,19 @@ const CreatePostsScreen = () => {
               <View>
                 {!photo && (
                   <>
-                    <TouchableOpacity
-                      style={styles.cameraBox}
-                      activeOpacity={0.8}
-                    >
-                      <View style={styles.cameraIcon}>
-                        <CameraIcon />
-                      </View>
-                    </TouchableOpacity>
+                    <View style={styles.cameraContainer}>
+                      <Camera style={styles.cameraBox} ref={setCamera}>
+                        <TouchableOpacity
+                          activeOpacity={0.8}
+                          style={styles.cameraIcon}
+                          onPress={takePhoto}
+                        >
+                          {/* <View style={styles.cameraIcon}> */}
+                          <CameraIcon />
+                          {/* </View> */}
+                        </TouchableOpacity>
+                      </Camera>
+                    </View>
                     <Text style={{ ...styles.textStyle, color: "#BDBDBD" }}>
                       Download photo
                     </Text>
@@ -94,18 +108,22 @@ const CreatePostsScreen = () => {
 
                 {photo && (
                   <>
-                    <TouchableOpacity
-                      style={styles.cameraBox}
-                      activeOpacity={0.8}
-                    >
+                    <View style={styles.cameraContainer}>
                       <Image
-                        style={{ height: 240, width: "100%", borderRadius: 8 }}
+                        style={{
+                          height: 240,
+                          width: "100%",
+                          borderRadius: 8,
+                        }}
                         source={{ uri: photo }}
                       />
-                      <View style={styles.cameraIcon}>
+                      <TouchableOpacity
+                        style={styles.cameraIcon}
+                        activeOpacity={0.8}
+                      >
                         <CameraIcon addedPhoto="true" />
-                      </View>
-                    </TouchableOpacity>
+                      </TouchableOpacity>
+                    </View>
                     <Text style={{ ...styles.textStyle, color: "#BDBDBD" }}>
                       Edit photo
                     </Text>
@@ -205,22 +223,32 @@ const CreatePostsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  cameraBox: {
+  cameraContainer: {
     height: 240,
     width: "100%",
-    marginBottom: 8,
     backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
     borderWidth: 1,
+    marginBottom: 8,
     borderRadius: 8,
+    overflow: "hidden",
+  },
+  cameraBox: {
+    height: 240,
+    // width: "100%",
+    // backgroundColor: "rgba(0,0,0,0.9)",
+    // borderColor: "#E8E8E8",
+    // borderWidth: 1,
+    // borderRadius: 8,
   },
   cameraIcon: {
     position: "absolute",
-    top: "40%",
-    left: "42%",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -30 }, { translateY: -30 }],
     width: 60,
     height: 60,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
